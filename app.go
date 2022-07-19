@@ -94,6 +94,17 @@ type App struct {
 	// render custom help text by setting this variable.
 	CustomAppHelpTemplate string
 
+	// Default prompt, specific to OS
+	Prompt string
+	// Command to set the environment variable, specific to OS
+	EnvVarSetCommand string
+	// Assignment operator to set the environment variable, specific to OS
+	AssignmentOperator string
+	// Disable history for security reasons
+	DisableHistory string
+	// Enable history
+	EnableHistory string
+
 	didSetup bool
 }
 

@@ -172,7 +172,33 @@ func ShowCommandHelpAndExit(c *Context, command string, code int) {
 func ShowCommandHelp(ctx *Context, command string) error {
 	// show the subcommand help for a command with subcommands
 	if command == "" {
-		HelpPrinter(ctx.App.Writer, SubcommandHelpTemplate, ctx.App)
+		template := SubcommandHelpTemplate
+		if ctx.App.CustomAppHelpTemplate != "" {
+			template = ctx.App.CustomAppHelpTemplate
+		}
+
+		// If not set, set these values before printing help.
+		if ctx.App.Prompt == "" {
+			ctx.App.Prompt = defaultPrompt
+		}
+
+		if ctx.App.EnvVarSetCommand == "" {
+			ctx.App.EnvVarSetCommand = defaultEnvSetCmd
+		}
+
+		if ctx.App.AssignmentOperator == "" {
+			ctx.App.AssignmentOperator = defaultAssignmentOperator
+		}
+
+		if ctx.App.DisableHistory == "" {
+			ctx.App.DisableHistory = defaultDisableHistory
+		}
+
+		if ctx.App.EnableHistory == "" {
+			ctx.App.EnableHistory = defaultEnableHistory
+		}
+
+		HelpPrinter(ctx.App.Writer, template, ctx.App)
 		return nil
 	}
 
