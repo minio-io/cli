@@ -364,7 +364,7 @@ func TestApp_RunAsSubcommandParseFlags(t *testing.T) {
 func TestApp_RunAsSubCommandIncorrectUsage(t *testing.T) {
 	a := App{
 		Flags: []Flag{
-			StringFlag{Name: "--foo"},
+			StringFlag{Name: "foo"},
 		},
 		Writer: bytes.NewBufferString(""),
 	}

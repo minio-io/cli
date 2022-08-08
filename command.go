@@ -149,6 +149,7 @@ func (c Command) Run(ctx *Context) (err error) {
 				isFlagArg = false
 			case arg == "--":
 				terminatorIndex = index
+				regularArgs = append(regularArgs, arg)
 			case arg == "-":
 				regularArgs = append(regularArgs, arg)
 			case strings.HasPrefix(arg, "--"):
@@ -165,7 +166,6 @@ func (c Command) Run(ctx *Context) (err error) {
 					hyphens += "-"
 				}
 				flagName := strings.TrimPrefix(arg, hyphens)
-
 				f := set.Lookup(flagName)
 				if f != nil {
 					fv, ok := f.Value.(isBoolFlag)
