@@ -168,7 +168,8 @@ func (c Command) Run(ctx *Context) (err error) {
 
 				f := set.Lookup(flagName)
 				if f != nil {
-					isFlagArg = fv, ok := f.Value.(isBoolFlag); !ok || !fv.IsBoolFlag()
+					fv, ok := f.Value.(isBoolFlag)
+					isFlagArg = !ok || !fv.IsBoolFlag()
 				}
 			default:
 				regularArgs = append(regularArgs, arg)
