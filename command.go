@@ -105,6 +105,10 @@ func (c Command) FullName() string {
 // Commands is a slice of Command
 type Commands []Command
 
+type isBoolFlag interface {
+	IsBoolFlag() bool
+}
+
 // Run invokes the command given the context, parses ctx.Args() to generate command-specific flags
 func (c Command) Run(ctx *Context) (err error) {
 	if len(c.Subcommands) > 0 {
@@ -128,37 +132,52 @@ func (c Command) Run(ctx *Context) (err error) {
 	if c.SkipFlagParsing {
 		err = set.Parse(append([]string{"--"}, ctx.Args().Tail()...))
 	} else if !c.SkipArgReorder {
-		firstFlagIndex := -1
-		terminatorIndex := -1
-		for index, arg := range ctx.Args() {
-			if arg == "--" {
+		var (
+			regularArgs, flagArgs []string
+			terminatorIndex       = -1
+			isFlagArg             bool
+		)
+
+		for index, arg := range ctx.Args().Tail() {
+			doubleHyphen := false
+
+			switch {
+			case terminatorIndex > -1:
+				regularArgs = append(regularArgs, arg)
+			case isFlagArg:
+				flagArgs = append(flagArgs, arg)
+				isFlagArg = false
+			case arg == "--":
 				terminatorIndex = index
-				break
-			} else if arg == "-" {
-				// Do nothing. A dash alone is not really a flag.
-				continue
-			} else if strings.HasPrefix(arg, "-") && firstFlagIndex == -1 {
-				firstFlagIndex = index
+			case arg == "-":
+				regularArgs = append(regularArgs, arg)
+			case strings.HasPrefix(arg, "--"):
+				doubleHyphen = true
+				fallthrough
+			case strings.HasPrefix(arg, "-"):
+				flagArgs = append(flagArgs, arg)
+				if eq := strings.Index(arg, "="); eq > -1 {
+					break
+				}
+
+				hyphens := "-"
+				if doubleHyphen {
+					hyphens += "-"
+				}
+				flagName := strings.TrimPrefix(arg, hyphens)
+
+				f := set.Lookup(flagName)
+				if f != nil {
+					if fv, ok := f.Value.(isBoolFlag); !ok || !fv.IsBoolFlag() {
+						isFlagArg = true
+					}
+				}
+			default:
+				regularArgs = append(regularArgs, arg)
 			}
 		}
 
-		if firstFlagIndex > -1 {
-			args := ctx.Args()
-			regularArgs := make([]string, len(args[1:firstFlagIndex]))
-			copy(regularArgs, args[1:firstFlagIndex])
-
-			var flagArgs []string
-			if terminatorIndex > -1 {
-				flagArgs = args[firstFlagIndex:terminatorIndex]
-				regularArgs = append(regularArgs, args[terminatorIndex:]...)
-			} else {
-				flagArgs = args[firstFlagIndex:]
-			}
-
-			err = set.Parse(append(flagArgs, regularArgs...))
-		} else {
-			err = set.Parse(ctx.Args().Tail())
-		}
+		err = set.Parse(append(flagArgs, regularArgs...))
 	} else {
 		err = set.Parse(ctx.Args().Tail())
 	}
