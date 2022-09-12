@@ -135,7 +135,7 @@ func ShowAppHelpAndExit(c *Context, exitCode int) {
 // ShowAppHelp is an action that displays the help.
 func ShowAppHelp(c *Context) (err error) {
 	if c.App.CustomAppHelpTemplate == "" {
-		HelpPrinter(c.App.Writer, AppHelpTemplate, c.App)
+		HelpPrinter(c.App.HelpWriter, AppHelpTemplate, c.App)
 		return
 	}
 	customAppData := func() map[string]interface{} {
@@ -146,7 +146,7 @@ func ShowAppHelp(c *Context) (err error) {
 			"ExtraInfo": c.App.ExtraInfo,
 		}
 	}
-	HelpPrinterCustom(c.App.Writer, c.App.CustomAppHelpTemplate, c.App, customAppData())
+	HelpPrinterCustom(c.App.HelpWriter, c.App.CustomAppHelpTemplate, c.App, customAppData())
 	return nil
 }
 
@@ -172,7 +172,7 @@ func ShowCommandHelpAndExit(c *Context, command string, code int) {
 func ShowCommandHelp(ctx *Context, command string) error {
 	// show the subcommand help for a command with subcommands
 	if command == "" {
-		HelpPrinter(ctx.App.Writer, SubcommandHelpTemplate, ctx.App)
+		HelpPrinter(ctx.App.HelpWriter, SubcommandHelpTemplate, ctx.App)
 		return nil
 	}
 
@@ -200,9 +200,9 @@ func ShowCommandHelp(ctx *Context, command string) error {
 
 		if c.HasName(command) {
 			if c.CustomHelpTemplate != "" {
-				HelpPrinterCustom(ctx.App.Writer, c.CustomHelpTemplate, c, nil)
+				HelpPrinterCustom(ctx.App.HelpWriter, c.CustomHelpTemplate, c, nil)
 			} else {
-				HelpPrinter(ctx.App.Writer, CommandHelpTemplate, c)
+				HelpPrinter(ctx.App.HelpWriter, CommandHelpTemplate, c)
 			}
 			return nil
 		}

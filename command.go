@@ -297,6 +297,7 @@ func (c Command) startApp(ctx *Context) error {
 	app.Author = ctx.App.Author
 	app.Email = ctx.App.Email
 	app.Writer = ctx.App.Writer
+	app.HelpWriter = ctx.App.HelpWriter
 	app.ErrWriter = ctx.App.ErrWriter
 
 	app.categories = CommandCategories{}

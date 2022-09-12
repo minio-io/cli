@@ -146,7 +146,7 @@ func Test_helpCommand_Action_ErrorIfNoTopic(t *testing.T) {
 func Test_helpCommand_InHelpOutput(t *testing.T) {
 	app := NewApp()
 	output := &bytes.Buffer{}
-	app.Writer = output
+	app.HelpWriter = output
 	app.Run([]string{"test", "--help"})
 
 	s := output.String()
@@ -202,7 +202,7 @@ func TestShowAppHelp_CommandAliases(t *testing.T) {
 	}
 
 	output := &bytes.Buffer{}
-	app.Writer = output
+	app.HelpWriter = output
 	app.Run([]string{"foo", "--help"})
 
 	if !strings.Contains(output.String(), "frobbly, fr, frob") {
@@ -224,7 +224,7 @@ func TestShowCommandHelp_CommandAliases(t *testing.T) {
 	}
 
 	output := &bytes.Buffer{}
-	app.Writer = output
+	app.HelpWriter = output
 	app.Run([]string{"foo", "help", "fr"})
 
 	if !strings.Contains(output.String(), "frobbly") {
@@ -250,7 +250,7 @@ func TestShowSubcommandHelp_CommandAliases(t *testing.T) {
 	}
 
 	output := &bytes.Buffer{}
-	app.Writer = output
+	app.HelpWriter = output
 	app.Run([]string{"foo", "help"})
 
 	if !strings.Contains(output.String(), "frobbly, fr, frob, bork") {
@@ -285,7 +285,7 @@ EXAMPLES:
 	}
 
 	output := &bytes.Buffer{}
-	app.Writer = output
+	app.HelpWriter = output
 	app.Run([]string{"foo", "help", "frobbly"})
 
 	if strings.Contains(output.String(), "2. Frobbly runs without this param locally.") {
@@ -321,7 +321,7 @@ func TestShowAppHelp_HiddenCommand(t *testing.T) {
 	}
 
 	output := &bytes.Buffer{}
-	app.Writer = output
+	app.HelpWriter = output
 	app.Run([]string{"app", "--help"})
 
 	if strings.Contains(output.String(), "secretfrob") {
@@ -379,7 +379,7 @@ VERSION:
 	}
 
 	output := &bytes.Buffer{}
-	app.Writer = output
+	app.HelpWriter = output
 	app.Run([]string{"app", "--help"})
 
 	if strings.Contains(output.String(), "secretfrob") {

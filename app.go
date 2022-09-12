@@ -81,9 +81,11 @@ type App struct {
 	Author string
 	// Email of Author (Note: Use App.Authors, this is deprecated)
 	Email string
-	// Writer writer to write output to
+	// Writer for standard output
 	Writer io.Writer
-	// ErrWriter writes error output
+	// HelpWriter for help output
+	HelpWriter io.Writer
+	// ErrWriter for error outptu
 	ErrWriter io.Writer
 	// Other custom info
 	Metadata map[string]interface{}
@@ -120,6 +122,7 @@ func NewApp() *App {
 		Action:       helpCommand.Action,
 		Compiled:     compileTime(),
 		Writer:       os.Stdout,
+		HelpWriter:   os.Stdout,
 	}
 }
 

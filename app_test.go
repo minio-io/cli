@@ -184,6 +184,7 @@ func ExampleApp_Run_commandHelp() {
 func ExampleApp_Run_noAction() {
 	app := App{}
 	app.Name = "greet"
+	app.HelpWriter = os.Stdout
 	app.Run([]string{"greet"})
 	// Output:
 	// NAME:
@@ -203,6 +204,7 @@ func ExampleApp_Run_noAction() {
 func ExampleApp_Run_subcommandNoAction() {
 	app := App{}
 	app.Name = "greet"
+	app.HelpWriter = os.Stdout
 	app.Commands = []Command{
 		{
 			Name:        "describeit",
@@ -621,7 +623,7 @@ func TestApp_SetStdout(t *testing.T) {
 
 	app := NewApp()
 	app.Name = "test"
-	app.Writer = w
+	app.HelpWriter = w
 
 	err := app.Run([]string{"help"})
 	if err != nil {
@@ -1030,6 +1032,7 @@ func TestApp_Run_CommandWithSubcommandHasHelpTopic(t *testing.T) {
 		app := NewApp()
 		buf := new(bytes.Buffer)
 		app.Writer = buf
+		app.HelpWriter = buf
 
 		subCmdBar := Command{
 			Name:  "bar",
@@ -1074,7 +1077,7 @@ func TestApp_Run_CommandWithSubcommandHasHelpTopic(t *testing.T) {
 func TestApp_Run_SubcommandFullPath(t *testing.T) {
 	app := NewApp()
 	buf := new(bytes.Buffer)
-	app.Writer = buf
+	app.HelpWriter = buf
 	app.Name = "command"
 	subCmd := Command{
 		Name:  "bar",
@@ -1104,7 +1107,7 @@ func TestApp_Run_SubcommandFullPath(t *testing.T) {
 func TestApp_Run_SubcommandHelpName(t *testing.T) {
 	app := NewApp()
 	buf := new(bytes.Buffer)
-	app.Writer = buf
+	app.HelpWriter = buf
 	app.Name = "command"
 	subCmd := Command{
 		Name:     "bar",
@@ -1135,7 +1138,7 @@ func TestApp_Run_SubcommandHelpName(t *testing.T) {
 func TestApp_Run_CommandHelpName(t *testing.T) {
 	app := NewApp()
 	buf := new(bytes.Buffer)
-	app.Writer = buf
+	app.HelpWriter = buf
 	app.Name = "command"
 	subCmd := Command{
 		Name:  "bar",
@@ -1162,11 +1165,10 @@ func TestApp_Run_CommandHelpName(t *testing.T) {
 		t.Errorf("expected full path to subcommand: %s", output)
 	}
 }
-
 func TestApp_Run_CommandSubcommandHelpName(t *testing.T) {
 	app := NewApp()
 	buf := new(bytes.Buffer)
-	app.Writer = buf
+	app.HelpWriter = buf
 	app.Name = "base"
 	subCmd := Command{
 		Name:     "bar",
@@ -1205,7 +1207,7 @@ func TestApp_Run_Help(t *testing.T) {
 		app := NewApp()
 		app.Name = "boom"
 		app.Usage = "make an explosive entrance"
-		app.Writer = buf
+		app.HelpWriter = buf
 		app.Action = func(c *Context) error {
 			buf.WriteString("boom I say!")
 			return nil
@@ -1276,7 +1278,7 @@ func TestApp_Run_Categories(t *testing.T) {
 		},
 	}
 	buf := new(bytes.Buffer)
-	app.Writer = buf
+	app.HelpWriter = buf
 
 	app.Run([]string{"categories"})
 
