@@ -185,7 +185,6 @@ func (c Command) Run(ctx *Context) (err error) {
 	if nerr != nil {
 		fmt.Fprintln(ctx.App.Writer, nerr)
 		fmt.Fprintln(ctx.App.Writer)
-		ShowCommandHelp(ctx, c.Name)
 		return nerr
 	}
 
@@ -203,7 +202,6 @@ func (c Command) Run(ctx *Context) (err error) {
 		}
 		fmt.Fprintln(context.App.Writer, "Incorrect Usage:", err.Error())
 		fmt.Fprintln(context.App.Writer)
-		ShowCommandHelp(context, c.Name)
 		return err
 	}
 
@@ -230,7 +228,6 @@ func (c Command) Run(ctx *Context) (err error) {
 		if err != nil {
 			fmt.Fprintln(context.App.Writer, err)
 			fmt.Fprintln(context.App.Writer)
-			ShowCommandHelp(context, c.Name)
 			HandleExitCoder(err)
 			return err
 		}

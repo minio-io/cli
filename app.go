@@ -199,7 +199,6 @@ func (a *App) Run(arguments []string) (err error) {
 	context := NewContext(a, set, nil)
 	if nerr != nil {
 		fmt.Fprintln(a.Writer, nerr)
-		ShowAppHelp(context)
 		return nerr
 	}
 	context.shellComplete = shellComplete
@@ -215,7 +214,6 @@ func (a *App) Run(arguments []string) (err error) {
 			return err
 		}
 		fmt.Fprintf(a.Writer, "%s %s\n\n", "Incorrect Usage.", err.Error())
-		ShowAppHelp(context)
 		return err
 	}
 
@@ -245,7 +243,6 @@ func (a *App) Run(arguments []string) (err error) {
 		beforeErr := a.Before(context)
 		if beforeErr != nil {
 			fmt.Fprintf(a.Writer, "%v\n\n", beforeErr)
-			ShowAppHelp(context)
 			HandleExitCoder(beforeErr)
 			err = beforeErr
 			return err
@@ -322,11 +319,6 @@ func (a *App) RunAsSubcommand(ctx *Context) (err error) {
 	if nerr != nil {
 		fmt.Fprintln(a.Writer, nerr)
 		fmt.Fprintln(a.Writer)
-		if len(a.Commands) > 0 {
-			ShowSubcommandHelp(context)
-		} else {
-			ShowCommandHelp(ctx, context.Args().First())
-		}
 		return nerr
 	}
 
@@ -341,7 +333,6 @@ func (a *App) RunAsSubcommand(ctx *Context) (err error) {
 			return err
 		}
 		fmt.Fprintf(a.Writer, "%s %s\n\n", "Incorrect Usage.", err.Error())
-		ShowSubcommandHelp(context)
 		return err
 	}
 
