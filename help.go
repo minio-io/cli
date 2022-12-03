@@ -156,7 +156,7 @@ func DefaultAppComplete(c *Context) {
 		if command.Hidden {
 			continue
 		}
-		for _, name := range command.Names() {
+		for _, name := range command.NamesWithHiddenAliases() {
 			fmt.Fprintln(c.App.Writer, name)
 		}
 	}
