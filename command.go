@@ -262,9 +262,20 @@ func (c Command) Names() []string {
 	return names
 }
 
+// NamesWithHiddenAliases returns the names including short names and aliases.
+func (c Command) NamesWithHiddenAliases() []string {
+	names := []string{c.Name}
+
+	if c.ShortName != "" {
+		names = append(names, c.ShortName)
+	}
+	names = append(names, c.Aliases...)
+	return names
+}
+
 // HasName returns true if Command.Name or Command.ShortName matches given name
 func (c Command) HasName(name string) bool {
-	for _, n := range c.Names() {
+	for _, n := range c.NamesWithHiddenAliases() {
 		if n == name {
 			return true
 		}
